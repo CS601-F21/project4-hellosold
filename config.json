@@ -1,0 +1,8 @@
+{
+  "redirect_uri":"https://61ec-67-169-155-8.ngrok.io/login",
+  "client_id": "2464212157.2684442583664",
+  "client_secret": "40cfeaeddd4de35ee4a21132b1ff31d6",
+  "database": "user013",
+  "username": "user013",
+  "password": "user013"
+}
