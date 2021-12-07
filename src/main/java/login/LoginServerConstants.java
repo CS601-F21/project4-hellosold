@@ -13,6 +13,14 @@ public class LoginServerConstants {
             "</body>\n" +
             "</html>";
 
+    public static String NAVI_BODY = "<ul>\n" +
+            "    <li><a class=\"active\" href=\"/\">Home</a></li>\n" +
+            "    <li><a href=\"/editprofile\">Edit Profile</a></li>\n" +
+            "    <li><a href=\"/events\">Events</a></li>\n" +
+            "    <li><a href=\"/tickets\">Tickets</a></li>\n" +
+            "    <li><a href=\"/logout\">Logout</a></li>\n" +
+            "</ul>";
+
     public static final String HOST = "slack.com";
     public static final String AUTH_PATH = "openid/connect/authorize";
     public static final String TOKEN_PATH = "api/openid.connect.token";
@@ -36,4 +44,5 @@ public class LoginServerConstants {
     public static final String IS_AUTHED_KEY = "is_authed";
     public static final String NAME_KEY = "name";
     public static final String EMAIL_KEY = "email";
+
 }
