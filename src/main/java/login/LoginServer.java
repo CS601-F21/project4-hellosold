@@ -4,6 +4,7 @@ import editProfile.EditProfileServlet;
 import events.AddEventServlet;
 import events.EventServlet;
 import events.GetAEventServlet;
+import home.HomeServlet;
 import jdbc.DBCPDataSource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -54,7 +55,7 @@ public class LoginServer {
         // "Login with Slack" button
         context.addServlet(LandingServlet.class, "/");
 
-        context.addServlet(LandingServlet.class, "/home");
+        context.addServlet(HomeServlet.class, "/home");
 
         // Once authenticated, Slack will redirect the user
         // back to /login
