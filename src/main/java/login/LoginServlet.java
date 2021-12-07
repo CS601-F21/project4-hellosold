@@ -75,12 +75,14 @@ public class LoginServlet extends HttpServlet {
             userData.put("email", clientInfo.getEmail());
             context.setAttribute("data", userData);
 
-            PrintWriter pw = resp.getWriter();
-            pw.println(LoginServerConstants.PAGE_HEADER);
-            pw.println(NavigationBarConstants.NAVI_STYLE);
-            pw.println(LoginServerConstants.NAVI_BODY);
-            pw.println("<h1>Hello, " + clientInfo.getName() + "</h1>");
-            pw.println(LoginServerConstants.PAGE_FOOTER);
+            resp.sendRedirect("/home");
+
+//            PrintWriter pw = resp.getWriter();
+//            pw.println(LoginServerConstants.PAGE_HEADER);
+//            pw.println(NavigationBarConstants.NAVI_STYLE);
+//            pw.println(LoginServerConstants.NAVI_BODY);
+//            pw.println("<h1>Hello, " + clientInfo.getName() + "</h1>");
+//            pw.println(LoginServerConstants.PAGE_FOOTER);
 
         }
     }
