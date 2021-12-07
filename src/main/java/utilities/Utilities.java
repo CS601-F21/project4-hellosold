@@ -1,6 +1,9 @@
 package utilities;
 
 import com.google.gson.Gson;
+import jakarta.servlet.http.HttpServletResponse;
+import login.LoginServerConstants;
+import org.eclipse.jetty.http.HttpStatus;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -8,14 +11,11 @@ import org.xml.sax.XMLReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 
 public class Utilities {
     public static final String configFileName = "config.json";
-    public static final String session = "JSESSIONID=node0347w505ah1ko6xovy6o8t6ro0.node0";
+    public static final String session = "JSESSIONID=node01bw63o70r7ct2sz7xt657nk1a0.node0";
 
     /**
      * Read in the configuration file.
@@ -70,5 +70,18 @@ public class Utilities {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static void printRequireLogInPage(HttpServletResponse resp) {
+        try {
+            resp.setStatus(HttpStatus.OK_200);
+            PrintWriter writer = resp.getWriter();
+            writer.println(LoginServerConstants.PAGE_HEADER);
+            writer.println(LoginServerConstants.REDIRECT_TO_LOG_IN);
+            writer.println(LoginServerConstants.PAGE_FOOTER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
