@@ -1,9 +1,13 @@
 package login;
 
 import editProfile.EditProfileServlet;
+import events.AddEventServlet;
+import events.EventServlet;
+import events.GetAEventServlet;
 import jdbc.DBCPDataSource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import tickets.BuyTicketServlet;
 import utilities.Config;
 import utilities.Utilities;
 
@@ -50,6 +54,8 @@ public class LoginServer {
         // "Login with Slack" button
         context.addServlet(LandingServlet.class, "/");
 
+        context.addServlet(LandingServlet.class, "/home");
+
         // Once authenticated, Slack will redirect the user
         // back to /login
         context.addServlet(LoginServlet.class, "/login");
@@ -59,6 +65,14 @@ public class LoginServer {
 
         // handle edit profile
         context.addServlet(EditProfileServlet.class, "/editprofile");
+
+        // handle event
+        context.addServlet(EventServlet.class, "/events");
+        context.addServlet(AddEventServlet.class, "/events/add");
+        context.addServlet(GetAEventServlet.class, "/events/*");
+
+        // handle edit profile
+        context.addServlet(BuyTicketServlet.class, "/tickets/*");
 
         // start it up!
         server.setHandler(context);
