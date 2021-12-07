@@ -8,7 +8,7 @@ public class EditProfileServerConstants {
             "<style>\n" +
             "        body {\n" +
             "          font-family: Arial, Helvetica, sans-serif;\n" +
-            "          background-color: black;\n" +
+            "          background-color: #fae3d9\n" +
             "        }\n" +
             "\n" +
             "        * {\n" +
@@ -39,7 +39,7 @@ public class EditProfileServerConstants {
             "\n" +
             "        /* Set a style for the submit button */\n" +
             "        .subbtn {\n" +
-            "          background-color: #04AA6D;\n" +
+            "          background-color: #8ac6d1;\n" +
             "          color: white;\n" +
             "          padding: 16px 20px;\n" +
             "          margin: 8px 0;\n" +
@@ -57,6 +57,15 @@ public class EditProfileServerConstants {
             "</head>\n" +
             "<body>\n" +
             "\n";
+
+    public static String NAVI_BODY = "<ul>\n" +
+            "    <li><a href=\"/\">Home</a></li>\n" +
+            "    <li><a class=\"active\" href=\"/editprofile\">Edit Profile</a></li>\n" +
+            "    <li><a href=\"/events\">Events</a></li>\n" +
+            "    <li><a href=\"/tickets\">Tickets</a></li>\n" +
+            "    <li><a href=\"/logout\">Logout</a></li>\n" +
+            "</ul>";
+
     public static  final String PAGE_BODY = "<form action=\"/editprofile\" method=\"post\">\n" +
             "    <div class=\"container\">\n" +
             "        <h1>Edit Profile</h1>\n" +
@@ -64,22 +73,24 @@ public class EditProfileServerConstants {
             "        <hr/>\n" +
             "\n" +
             "        <label for=\"name\"><b>Name</b></label>\n" +
-            "        <input type=\"text\" placeholder=\"Enter Name\" name=\"name\" id=\"name\" required />\n" +
+            "        <input type=\"text\" placeholder=\"Enter Name\" name=\"name\" id=\"name\" required=\"required\" " +
+            "/>\n" +
             "\n" +
             "        <label><b>Gender</b></label>\n" +
-            "        <input type=\"radio\" name=\"gender\" id=\"gender1\" value=\"male\" required />\n" +
+            "        <input type=\"radio\" name=\"gender\" id=\"gender1\" value=\"male\" required=\"required\" />\n" +
             "        <label for=\"gender1\">male</label>\n" +
-            "        <input type=\"radio\" name=\"gender\" id=\"gender2\" value=\"female\" required />\n" +
-            "        <label for=\"gender2\">female</label><br />\n" +
+            "        <input type=\"radio\" name=\"gender\" id=\"gender2\" value=\"female\" required=\"required\" />\n" +
+            "        <label for=\"gender2\">female</label>\n<br></br>" +
             "\n" +
             "        <label for=\"location\"><b>Location</b></label>\n" +
-            "        <input type=\"text\" placeholder=\"Enter City\" name=\"location\" id=\"location\" required />\n" +
-            "        <br /><hr/>\n" +
+            "        <input type=\"text\" placeholder=\"Enter City\" name=\"location\" id=\"location\" required=\"required\" />\n" +
+            "        <hr/>\n" +
             "\n" +
             "        <button type=\"submit\" class=\"subbtn\">Submit</button>\n" +
             "    </div>\n" +
             "\n" +
             "</form>";
+
 
     public static final String PAGE_FOOTER = "\n" +
             "</body>\n" +
