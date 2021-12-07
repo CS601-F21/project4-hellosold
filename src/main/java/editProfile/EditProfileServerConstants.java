@@ -59,7 +59,7 @@ public class EditProfileServerConstants {
             "\n";
 
     public static String NAVI_BODY = "<ul>\n" +
-            "    <li><a href=\"/\">Home</a></li>\n" +
+            "    <li><a href=\"/home\">Home</a></li>\n" +
             "    <li><a class=\"active\" href=\"/editprofile\">Edit Profile</a></li>\n" +
             "    <li><a href=\"/events\">Events</a></li>\n" +
             "    <li><a href=\"/tickets\">Tickets</a></li>\n" +

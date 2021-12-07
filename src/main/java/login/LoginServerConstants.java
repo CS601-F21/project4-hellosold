@@ -21,6 +21,17 @@ public class LoginServerConstants {
             "    <li><a href=\"/logout\">Logout</a></li>\n" +
             "</ul>";
 
+    public static String REDIRECT_TO_LOG_IN = "    <meta http-equiv=\"refresh\"\n" +
+            "          content=\"5; url = https://61ec-67-169-155-8.ngrok.io\" />\n" +
+            "<h1 style=\"text-align:center;color:#ffb6b9;\">\n" +
+            "    Please log in.\n" +
+            "</h1>\n" +
+            "\n" +
+            "<p style=\"text-align:center;\">\n" +
+            "    If your browser supports Refresh,\n" +
+            "    you'll be redirected to Landing Page, in 5 seconds.\n" +
+            "</p>";
+
     public static final String HOST = "slack.com";
     public static final String AUTH_PATH = "openid/connect/authorize";
     public static final String TOKEN_PATH = "api/openid.connect.token";

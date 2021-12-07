@@ -17,7 +17,7 @@ public class EventServletConstants {
             "</html>";
 
     public static String NAVI_BODY = "<ul>\n" +
-            "    <li><a href=\"/\">Home</a></li>\n" +
+            "    <li><a href=\"/home\">Home</a></li>\n" +
             "    <li><a href=\"/editprofile\">Edit Profile</a></li>\n" +
             "    <li><a class=\"active\" href=\"/events\">Events</a></li>\n" +
             "    <li><a href=\"/tickets\">Tickets</a></li>\n" +
