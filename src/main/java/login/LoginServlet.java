@@ -1,5 +1,6 @@
 package login;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import utilities.HTTPFetcher;
 import utilities.LoginUtilities;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -63,11 +66,21 @@ public class LoginServlet extends HttpServlet {
         } else {
             req.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo);
             resp.setStatus(HttpStatus.OK_200);
-            resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            resp.getWriter().println("<h1>Hello, " + clientInfo.getName() + "</h1>");
-            resp.getWriter().println("<p><a href=\"/logout\">Signout</a>");
-            resp.getWriter().println("<p><a href=\"/editprofile\">Edit Profile</a>");
-            resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+
+            // store user info into servlet context
+            ServletContext context = req.getServletContext();
+            Map<String, String> userData = new HashMap<>();
+            userData.put("id", String.valueOf(clientInfo.getId()));
+            userData.put("name", clientInfo.getName());
+            userData.put("email", clientInfo.getEmail());
+            context.setAttribute("data", userData);
+
+            PrintWriter pw = resp.getWriter();
+            pw.println(LoginServerConstants.PAGE_HEADER);
+            pw.println(NavigationBarConstants.NAVI_STYLE);
+            pw.println(LoginServerConstants.NAVI_BODY);
+            pw.println("<h1>Hello, " + clientInfo.getName() + "</h1>");
+            pw.println(LoginServerConstants.PAGE_FOOTER);
 
         }
     }
