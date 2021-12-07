@@ -14,7 +14,7 @@ public class AddEventServletConstants {
             "  <label for=\"place\">Place:</label>\n" +
             "  <input type=\"text\" id=\"place\" name=\"place\" required=\"required\"/><br/><br/>\n" +
             "  <label for=\"ticket\">Total tickets:</label>\n" +
-            "  <input type=\"text\" id=\"ticket\" name=\"ticket\" required=\"required\"/><br/><br/>\n" +
+            "  <input type=\"number\" id=\"ticket\" name=\"ticket\" required=\"required\"/><br/><br/>\n" +
             "  <label for=\"description\">Details:</label>\n" +
             "<br/><br/>" +
             "  <input type=\"text\" id=\"description\" name=\"description\" style=\"height:200px; width:500px;\" " +
