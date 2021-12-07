@@ -54,11 +54,7 @@ public class GetAEventServlet extends HttpServlet {
         }
 
         // not logged in, require user to log in
-        resp.setStatus(HttpStatus.OK_200);
-        PrintWriter writer = resp.getWriter();
-        writer.println(LoginServerConstants.PAGE_HEADER);
-        writer.println("<h1>Please log in</h1>");
-        writer.println(LoginServerConstants.PAGE_FOOTER);
+        Utilities.printRequireLogInPage(resp);
     }
 
     /**

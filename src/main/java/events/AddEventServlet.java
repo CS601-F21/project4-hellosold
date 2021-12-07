@@ -10,6 +10,7 @@ import jdbc.JDBCUtility;
 import login.LoginServerConstants;
 import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
+import utilities.Utilities;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,11 +53,7 @@ public class AddEventServlet extends HttpServlet {
         }
 
         // not logged in, let the user to log in
-        resp.setStatus(HttpStatus.OK_200);
-        PrintWriter writer = resp.getWriter();
-        writer.println(LoginServerConstants.PAGE_HEADER);
-        writer.println("<h1>Please log in</h1>");
-        writer.println(LoginServerConstants.PAGE_FOOTER);
+        Utilities.printRequireLogInPage(resp);
     }
 
     /**
