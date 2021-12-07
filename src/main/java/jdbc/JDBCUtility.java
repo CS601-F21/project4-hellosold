@@ -9,8 +9,17 @@ import java.util.ArrayList;
 
 public class JDBCUtility {
 
+    /**
+     * Add a new user to users table.
+     * @param con connection
+     * @param name user name
+     * @param email user email
+     * @return userId
+     * @throws SQLException
+     */
     public static int executeAddNewUser(Connection con, String name, String email) throws SQLException {
         String insertUserSql = "INSERT INTO users (name, email) VALUES (?, ?);";
+        // Statement, insertUserStmt can be repeated used
         PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql);
         insertUserStmt.setString(1, name);
         insertUserStmt.setString(2, email);
@@ -18,6 +27,8 @@ public class JDBCUtility {
         if (affectRows == 0) {
             throw new SQLException("Creating user failed, no rows affected.");
         }
+
+        // Get user id
         int userId;
         try (ResultSet generatedKeys = insertUserStmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
@@ -30,6 +41,14 @@ public class JDBCUtility {
         }
     }
 
+    /**
+     * Get a user information by providing the user name and email.
+     * @param con con
+     * @param name user name
+     * @param email user email
+     * @return user id
+     * @throws SQLException
+     */
     public static int executeSelectUser(Connection con, String name, String email) throws SQLException {
         String selectUserSql = "SELECT * FROM users WHERE name = ? AND email = ?;";
         PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
@@ -44,7 +63,7 @@ public class JDBCUtility {
     }
 
     /**
-     * Add a new user to the users table.
+     * Edit user info of a specific user by providing user email in the users table.
      * @param con con
      * @param name name
      * @param email email
@@ -64,6 +83,12 @@ public class JDBCUtility {
         updateUserStmt.executeUpdate();
     }
 
+    /**
+     * Seclect all events from events table.
+     * @param con con
+     * @return list of events
+     * @throws SQLException
+     */
     public static ArrayList<Event> executeSelectEvents(Connection con) throws SQLException {
         ArrayList<Event> events = new ArrayList<>();
         String selectAllEvents = "SELECT users.name, events.id, events.title, events.event_date, events.event_time, " +
@@ -76,6 +101,9 @@ public class JDBCUtility {
         Date date;
         Time time;
         int tickets;
+
+        // Get information of a event, then create a event object
+        // Add the event to event list
         while(results.next()) {
             eventId = results.getInt("id");
             sponsor = results.getString(LoginServerConstants.NAME_KEY);
@@ -96,10 +124,22 @@ public class JDBCUtility {
         return events;
     }
 
+    /**
+     * Add a new event to events table.
+     * @param con con
+     * @param userId userId
+     * @param description description
+     * @param date date
+     * @param time time
+     * @param place place
+     * @param title title
+     * @param numTicket numTicket
+     * @throws SQLException
+     */
     public static void executeAddEvent(Connection con, int userId, String description, Date date, Time time,
-                                       String place, String title) throws SQLException {
-        String insertEventSql = "INSERT INTO events (user_id, description, event_date, event_time, event_place, title)" +
-                 "VALUES (?, ?, ?, ?, ?, ?);";
+                                       String place, String title, int numTicket) throws SQLException {
+        String insertEventSql = "INSERT INTO events (user_id, description, event_date, event_time, event_place, " +
+                "title, num_ticket) VALUES (?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement insertUserStmt = con.prepareStatement(insertEventSql);
         insertUserStmt.setInt(1, userId);
         insertUserStmt.setString(2, description);
@@ -107,9 +147,17 @@ public class JDBCUtility {
         insertUserStmt.setTime(4, time);
         insertUserStmt.setString(5, place);
         insertUserStmt.setString(6, title);
+        insertUserStmt.setInt(7, numTicket);
         insertUserStmt.executeUpdate();
     }
 
+    /**
+     * Get info of a event by eventId.
+     * @param con con
+     * @param eventId eventId
+     * @return event
+     * @throws SQLException
+     */
     public static Event executeGetAEvent(Connection con, int eventId) throws SQLException {
         String getAEventSql = "SELECT description, event_date, event_time, event_place, title, num_ticket, users.name" +
                 " FROM events" + " JOIN users ON users.id=events.user_id AND events.id=?";
@@ -126,6 +174,7 @@ public class JDBCUtility {
         int tickets;
         Event event = null;
 
+        // Get all info of the event, then return it
         while(results.next()) {
             description = results.getString(EventServletConstants.DESCRIPTION);
             date = results.getDate(EventServletConstants.DATE);
@@ -140,12 +189,62 @@ public class JDBCUtility {
         return event;
     }
 
-    public static void executeBuyTicket(Connection con, int uerId, int eventId) throws SQLException {
-        String buyTicketSql = "INSERT INTO purchases (user_id, event_id) VALUES (?,?);";
-        PreparedStatement buyTicketStmt = con.prepareStatement(buyTicketSql);
-        buyTicketStmt.setInt(1, uerId);
-        buyTicketStmt.setInt(2, eventId);
-        int result = buyTicketStmt.executeUpdate();
-        System.out.println(result);
+    /**
+     * When user buy some tickets, update the events table and purchase table.
+     * @param con con
+     * @param uerId userId
+     * @param eventId eventId
+     * @throws SQLException
+     */
+    public static int executeBuyTicket(Connection con, int uerId, int eventId, int num) throws SQLException {
+        String selectEventSql = "SELECT num_ticket FROM events WHERE id=?";
+        PreparedStatement selectStmt = con.prepareStatement(selectEventSql);
+        selectStmt.setInt(1, eventId);
+        ResultSet resultSet = selectStmt.executeQuery();
+        int numTickets = 0;
+        while (resultSet.next()) {
+            numTickets = resultSet.getInt(EventServletConstants.NUM_TICKET);
+        }
+
+        if (numTickets >= num) {
+            String buyTicketSql = "INSERT INTO purchases (user_id, event_id, num_ticket) VALUES (?,?,?);";
+            PreparedStatement buyTicketStmt = con.prepareStatement(buyTicketSql);
+            buyTicketStmt.setInt(1, uerId);
+            buyTicketStmt.setInt(2, eventId);
+            buyTicketStmt.setInt(3, num);
+            buyTicketStmt.executeUpdate();
+
+            String updateEventSql = "UPDATE events SET num_ticket=? WHERE id=?;";
+            PreparedStatement updateStmt = con.prepareStatement(updateEventSql);
+            updateStmt.setInt(1, numTickets - num);
+            updateStmt.setInt(2, eventId);
+            return updateStmt.executeUpdate();
+        } else {
+            return 0;
+        }
+
+    }
+
+    /**
+     * Get the total number of tickets that a user has purchased for an event.
+     * @param con con
+     * @param userId userId
+     * @param eventId eventId
+     * @return number of tickets
+     * @throws SQLException
+     */
+    public static int executedGetNumOfTickets(Connection con, int userId, int eventId) throws SQLException {
+        String ticketSql = "SELECT num_ticket FROM purchases WHERE user_id=? AND event_id=?;";
+        PreparedStatement ticketStmt = con.prepareStatement(ticketSql);
+        ticketStmt.setInt(1, userId);
+        ticketStmt.setInt(2, eventId);
+        ResultSet resultSet = ticketStmt.executeQuery();
+
+        int total = 0;
+        while (resultSet.next()) {
+            int number = resultSet.getInt(EventServletConstants.NUM_TICKET);
+            total += number;
+        }
+        return total;
     }
 }
