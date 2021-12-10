@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jdbc.DBCPDataSource;
 import jdbc.JDBCUtility;
 import login.LoginServerConstants;
-import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
 import tickets.Ticket;
 import tickets.TransferTicket;
@@ -43,7 +42,7 @@ public class HomeServlet extends HttpServlet {
             String name = data.get("name");
             resp.setStatus(HttpStatus.OK_200);
             writer.println(HomeServletConstants.PAGE_HEADER);
-            writer.println(NavigationBarConstants.NAVI_STYLE);
+            writer.println(HomeServletConstants.HOME_STYLE);
             writer.println(HomeServletConstants.NAVI_BODY);
             writer.println("<h1>Hello, " + name + "</h1>");
             getAndPrintPurchasedTickets(userId, writer);
@@ -72,8 +71,9 @@ public class HomeServlet extends HttpServlet {
                 writer.println("    <p> Place: " + event.getPlace() + "</p>");
                 writer.println("    <p> Tickets left: " + event.getTickets() + "</p>");
                 writer.println("    <p> Owned tickets: " + t.getTickets() + "</p>");
+                writer.println("<hr/>");
             }
-            writer.println("<br />");
+
         }
     }
 
@@ -102,8 +102,8 @@ public class HomeServlet extends HttpServlet {
         try (Connection con = DBCPDataSource.getConnection()) {
             List<TransferTicket> transTik = JDBCUtility.executeGetAllTransfers(con, userId);
             if (transTik.size() != 0) {
+                writer.println("<h2>Transfer tickets: </h2>");
                 for (TransferTicket ticket : transTik) {
-                    writer.println("<h2>Transfer tickets: </h2>");
                     writer.println("<h4>Title: " + ticket.getEventTitle() + "</h4>");
                     writer.println("  <p> Transfer to user: " + ticket.getToUser() + "</p>");
                     writer.println("  <p> Number of Tickets: " + ticket.getNum() + "</p>");

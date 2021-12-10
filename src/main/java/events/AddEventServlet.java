@@ -10,7 +10,6 @@ import jakarta.servlet.http.Part;
 import jdbc.DBCPDataSource;
 import jdbc.JDBCUtility;
 import login.LoginServerConstants;
-import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Request;
 import utilities.Utilities;

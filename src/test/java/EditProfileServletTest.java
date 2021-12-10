@@ -111,7 +111,7 @@ public class EditProfileServletTest {
             // so no data should have been added to the data structure.
             Assertions.assertEquals(data.get("name"), expected);
 
-        } catch (ServletException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -143,7 +143,7 @@ public class EditProfileServletTest {
             EditProfileServlet ts = new EditProfileServlet();
             ts.doPost(mockedRequest, mockedResponse);
             verify(mockedResponse).setStatus(HttpStatus.OK_200);
-        } catch (ServletException | IOException e) {
+        } catch (IOException e) {
             fail(e.getMessage());
         }
     }
