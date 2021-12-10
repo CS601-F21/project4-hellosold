@@ -1,13 +1,11 @@
 package events;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jdbc.DBCPDataSource;
 import jdbc.JDBCUtility;
 import login.LoginServerConstants;
-import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
 import utilities.Utilities;
 import java.io.IOException;
@@ -211,7 +209,6 @@ public class GetAEventServlet extends HttpServlet {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
     }
 
     /**
@@ -343,10 +340,10 @@ public class GetAEventServlet extends HttpServlet {
         String path = request.getPathInfo();
         int eventId = Integer.parseInt(path.split("/")[2]);
         // get parameter from request
-        String title = request.getParameter("title");
+        String title = request.getParameter(EventServletConstants.TITLE);
         java.sql.Date date = java.sql.Date.valueOf(request.getParameter(AddEventServletConstants.DATE));
-        Time time = Time.valueOf(request.getParameter(AddEventServletConstants.TIME) + ":00");
-        String place = request.getParameter("place");
+        Time time = Time.valueOf(request.getParameter(AddEventServletConstants.TIME));
+        String place = request.getParameter(EventServletConstants.PLACE);
         int num = Integer.parseInt(request.getParameter("ticket"));
         String description = request.getParameter(EventServletConstants.DESCRIPTION);
 
