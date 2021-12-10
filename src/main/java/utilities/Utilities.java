@@ -1,6 +1,7 @@
 package utilities;
 
 import com.google.gson.Gson;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import login.LoginServerConstants;
 import org.eclipse.jetty.http.HttpStatus;
@@ -12,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
+import java.util.Map;
 
 public class Utilities {
     public static final String configFileName = "config.json";
@@ -35,13 +37,12 @@ public class Utilities {
         return config;
     }
 
+    /**
+     * Check whether the string is digit.
+     * @param id id
+     * @return true or false
+     */
     public static boolean isDigit(String id) {
-        System.out.println("from utility class: " + id);
-//        if (id.length() < 2) {
-//            return false;
-//        } else {
-//            id = id.substring(1); // id ->/{id}
-//        }
         for (char c : id.toCharArray()) {
             if (!Character.isDigit(c)) {
                 return false;
@@ -54,8 +55,8 @@ public class Utilities {
      * Returns true if the html is valid and false otherwise.
      * Taken from Wellformed.java example from
      * http://www.edankert.com/validate.html#Sample_Code
-     * @param html
-     * @return
+     * @param html html
+     * @return true if it is valid, otherwise false
      */
     public static boolean isValid(String html) {
         try {
@@ -72,6 +73,10 @@ public class Utilities {
         }
     }
 
+    /**
+     * If the user is not logged in, redirect the user to landing page to let the user log in.
+     * @param resp response
+     */
     public static void printRequireLogInPage(HttpServletResponse resp) {
         try {
             resp.setStatus(HttpStatus.OK_200);
@@ -83,5 +88,18 @@ public class Utilities {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * A helper method to get the user id from servlet context.
+     * @param request request
+     * @return user id
+     */
+    public static int getUserId(HttpServletRequest request) {
+        Object data = request.getServletContext().getAttribute("data");
+        String id = String.valueOf(((Map<String, String>) data).get("id"));
+        int userId = Integer.parseInt(id);
+        System.out.println("Utility class, user id is: " + userId);
+        return userId;
     }
 }
