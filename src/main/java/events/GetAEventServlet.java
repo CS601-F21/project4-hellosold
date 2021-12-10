@@ -9,20 +9,20 @@ import jdbc.JDBCUtility;
 import login.LoginServerConstants;
 import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
-import tickets.BuyTicketServletConstants;
 import utilities.Utilities;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
+import java.sql.Time;
 
 /**
  * This class handles get request to retrieve details for a specific event.
  * And handles post request to allow the user to purchase tickets for an event, and set a limit 6.
  * When a user already buy 6 tickets of this event, then the purchase is not allowed.
  * If not, the purchase only success when the remaining tickets is satisfied.
+ *
+ * Handle post request to edit/delete an event.
  *
  * @author Li Liu
  */
@@ -31,11 +31,10 @@ public class GetAEventServlet extends HttpServlet {
      * Handle get methods of getting detail information of a event.
      * @param req request
      * @param resp response
-     * @throws ServletException
-     * @throws IOException
+     * @throws IOException IOException
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // determine whether the user is already authenticated
         Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
 
@@ -48,7 +47,7 @@ public class GetAEventServlet extends HttpServlet {
             pw.println(EventServletConstants.NAVI_BODY);
             pw.println("<body>\n");
             pw.println("<h1>Event Information</h1>");
-            parseRequest(req, resp.getWriter());
+            parseRequest(req, resp);
             pw.println(EventServletConstants.PAGE_FOOTER);
             return;
         }
@@ -62,26 +61,38 @@ public class GetAEventServlet extends HttpServlet {
      * if the path of request is events/event_id
      * for example: events/1 -> show the details of event which id is 1
      *
+     * events/1/edit -> show the details of event which id is 1 and allow the user to change the parameters of this
+     * event
+     *
      * if the path of request id event/event_id/buy
      * go to the buy tickets page
      *
      * @param req request
-     * @param writer writer
      */
-    private void parseRequest(HttpServletRequest req, PrintWriter writer) {
-        String path = req.getPathInfo();
-        System.out.println("path is:" + path);
-        String[] pathSplits = path.split("/");
-        if (pathSplits.length == 2) {
-            handleGetEvent(writer, pathSplits[1]);
-        } else {
-            writer.println("<p>Recourse is not available.</p>");
+    private void parseRequest(HttpServletRequest req, HttpServletResponse response) {
+        PrintWriter writer;
+        try {
+            writer = response.getWriter();
+            String path = req.getPathInfo();
+            System.out.println("line 73, path is:" + path);
+            String[] pathSplits = path.split("/");
+            if (pathSplits.length == 2) {
+                handleGetEvent(writer, pathSplits[1]);
+            } else if (path.contains("/edit")) {
+                handleEditEvent(req, response);
+            } else {
+                writer.println("<p>Recourse is not available.</p>");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
-
     /**
-     * A helper method to get a event by providing the event id.
+     * A helper method to get details of an event by providing the event id.
+     * Show the title, date, time, place, createdBy, description and remaining tickets, poster of this event.
+     *
      * @param writer printWriter
      * @param id event id
      */
@@ -101,10 +112,9 @@ public class GetAEventServlet extends HttpServlet {
                     writer.println("<p> Place: " + event.getPlace() + "</p>\n");
                     writer.println("<p> Description: " + event.getDescription() + "</p>\n");
                     writer.println("<p> Remaining tickets: " + event.getTickets() + "</p>\n");
-
-//                    writer.println("<a href=events/" + eventId +"/buy><button>" + "BUY</button></a>\n");
+                    writer.println("<img src=\"https://61ec-67-169-155-8.ngrok.io/" + event.getImagePath() +
+                            "\" alt=\"poster\" width=\"500px\" height=\"300px\"/>");
                     writer.println("<form action=\"/events/" + eventId +"\" method=\"post\">\n" +
-                            //"    <label for=\"buy\">Buy some tickets:</label></form><br/>\n" +
                             "    <input type=\"text\" id=\"num\" name=\"num\" />\n" +
                             "    <input type=\"submit\" value=\"BUY\"/>\n" +
                             "</form>");
@@ -120,24 +130,30 @@ public class GetAEventServlet extends HttpServlet {
 
     /**
      * Handle buy tickets request.
+     * First check the input number of tickets that the user wants to buy is no greater than 6.
+     * If the number is grater than 6, let the user to change the number.
+     *
+     * Then check if there are enough tickets left for this event, if there's enough tickets left, go update tables.
      * @param req request
      * @param resp response
-     * @throws ServletException
-     * @throws IOException
+     * @throws IOException IOException
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // get user id
-        Map<String, String> data = (Map<String, String>) req.getServletContext().getAttribute("data");
-        int userId = Integer.parseInt(data.get("id"));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        parsePath(req, resp);
+    }
 
-        PrintWriter writer = resp.getWriter();
+    private void handleBuyEvent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // get user id
+        int userId = Utilities.getUserId(request);
+        PrintWriter writer = response.getWriter();
+
         // get event id
-        int eventId = getEventId(req);
+        int eventId = getEventId(request);
 
         // get num of tickets to buy
         // input num should be no greater than 6
-        String num = req.getParameter("num");
+        String num = request.getParameter("num");
         System.out.println("num is: " + num);
         int tickets = 0;
         if (validInputNum(num)) {
@@ -164,14 +180,92 @@ public class GetAEventServlet extends HttpServlet {
                     writer.println("<p>No enough tickets left.</p>");
                     return;
                 }
-                writer.println(BuyTicketServletConstants.POST_PAGE);
+                response.sendRedirect("/home");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
             writer.println("<p>Resource is not available.</p>");
         }
+    }
 
+    /**
+     * Handle get request of edit events.
+     * Return all the details of this event.
+     * @param request request
+     * @param response response
+     */
+    private void handleEditEvent(HttpServletRequest request, HttpServletResponse response) {
+        String path = request.getPathInfo();
+        int eventId = Integer.parseInt(path.split("/")[2]);
+        System.out.println("Edit event id is: " + eventId);
+        try {
+            getEditEventPage(response, eventId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Get and print details of this event.
+     * @param response response
+     * @param eventId eventId
+     * @throws SQLException SQL exception
+     */
+    private void getEditEventPage(HttpServletResponse response, int eventId) throws SQLException {
+        try (Connection connection = DBCPDataSource.getConnection()) {
+            Event event = JDBCUtility.executeGetEvent(connection, eventId);
+            PrintWriter writer = response.getWriter();
+            writer.println(EventServletConstants.PAGE_HEADER);
+            writer.println(EventServletConstants.BODY_OPEN_TAG);
+            writer.println("<form action=\"/events/edit/" + eventId + "\" method=\"post\">\n" +
+                    "    <label for=\"title\">Title:</label>\n" +
+                    "    <input type=\"text\" id=\"title\" name=\"title\" value=\"" + event.getTitle() + "\"/><br/><br/>");
+            writer.println("<label for=\"date\">Date:</label>\n" +
+                    "    <input type=\"date\" id=\"date\" name=\"date\" value=\"" + event.getDate() + "\"/><br/><br/>");
+            writer.println("<label for=\"time\">Time:</label>\n" +
+                    "    <input type=\"time\" id=\"time\" name=\"time\" min=\"00:00:00\" max=\"24:00:00\"" +
+                    "value=\"" + event.getTime() + "\"/>\n" +
+                    "    <br/><br/>");
+            writer.println("<label for=\"place\">Place:</label>\n" +
+                    "    <input type=\"text\" id=\"place\" name=\"place\" value=\"" + event.getPlace() + "\"/> " +
+                    "<br/><br/>");
+            writer.println("<label for=\"ticket\">Total tickets:</label>\n" +
+                    "    <input type=\"number\" id=\"ticket\" name=\"ticket\" value=\"" + event.getTickets() + "\"/> " +
+                    "<br/><br/>");
+            writer.println("<label for=\"description\">Description:</label><br />\n" +
+                    "    <textarea type=\"text\" id=\"description\" name=\"description\" rows=\"5\" cols=\"40\">" +
+                    event.getDescription() + "</textarea>\n<br/><br/>");
+            writer.println("    <input type=\"submit\" value=\"Edit\"/> <br/>\n" +
+                    "</form>");
+            writer.println(EventServletConstants.PAGE_FOOTER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handle post requests of deleting an event.
+     * @param request request
+     * @param response response
+     */
+    private void handleDeleteEvent(HttpServletRequest request, HttpServletResponse response) {
+        // parse request path, find out the eventId
+        String path = request.getPathInfo();
+        int idx = path.indexOf("/delete");
+        int eventID = Integer.parseInt(path.substring(idx + 8));
+        System.out.println("eventId is: " + eventID);
+
+        // delete event from the database
+        try (Connection connection = DBCPDataSource.getConnection()) {
+            JDBCUtility.executeDeleteEvent(connection, eventID);
+            response.getWriter().println(LoginServerConstants.PAGE_HEADER);
+            response.getWriter().println("<h1>Delete event!</h1>");
+            response.getWriter().println(LoginServerConstants.PAGE_FOOTER);
+        } catch (SQLException | IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -181,7 +275,7 @@ public class GetAEventServlet extends HttpServlet {
      * @return true if is valid, false otherwise
      */
     private boolean validInputNum(String tickets) {
-        int num = 0;
+        int num;
         boolean isDigit = Utilities.isDigit(tickets);
         if (isDigit) {
             num = Integer.parseInt(tickets);
@@ -202,12 +296,59 @@ public class GetAEventServlet extends HttpServlet {
         if (path.length == 2) {
             eventId = path[1];
         }
-        System.out.println("event is " + eventId);
+        System.out.println("event id is " + eventId);
         if (Utilities.isDigit(eventId)) {
             resultId = Integer.parseInt(eventId);
         }
         return resultId;
     }
+
+    /**
+     * A helper method to parse the post requests.
+     * If the path contains "/edit", then call method to handle edit request.
+     * If the path contians "/delete", then call method to handle deletion request.
+     * @param request request
+     * @param response response
+     * @throws IOException IOException
+     */
+    private void parsePath(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
+        if (path.contains("/edit")) {
+            handlePostEditEvent(request, response);
+        } else if (path.contains("/delete")) {
+            handleDeleteEvent(request, response);
+        } else {
+            handleBuyEvent(request, response);
+        }
+    }
+
+    /**
+     * Handle post request of editing some existing event.
+     * Get all input from the user, then update events table.
+     * @param request request
+     * @param response response
+     */
+    private void handlePostEditEvent(HttpServletRequest request, HttpServletResponse response) {
+        // get eventId
+        String path = request.getPathInfo();
+        int eventId = Integer.parseInt(path.split("/")[2]);
+        // get parameter from request
+        String title = request.getParameter("title");
+        java.sql.Date date = java.sql.Date.valueOf(request.getParameter(AddEventServletConstants.DATE));
+        Time time = Time.valueOf(request.getParameter(AddEventServletConstants.TIME) + ":00");
+        String place = request.getParameter("place");
+        int num = Integer.parseInt(request.getParameter("ticket"));
+        String description = request.getParameter(EventServletConstants.DESCRIPTION);
+
+        // update events table
+        try(Connection connection = DBCPDataSource.getConnection()) {
+            JDBCUtility.executeUpdateEvent(connection, eventId, title, description, date, time, place, num);
+            response.sendRedirect("/events/" + eventId);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * A helper method to get total number tickets that has been purchased.
