@@ -49,7 +49,7 @@ public class LoginServerConstants {
             "    <title>Welcome!</title>\n" +
             "</head>\n" +
             "\n" +
-            "<body style=\"background-color:#fae3d9;\">\n" +
+            "<body>\n" +
             "<h1>Welcome to the Naive Ticket Purchase Web Application.</h1>\n" +
             "<div class=\"div1\">\n" +
             "<img src=\"https://www.abc4.com/wp-content/uploads/sites/4/2018/12/movie-popcorn-entertainment_1530120399830_382133_ver1.0_47007319_ver1.0.jpg\"\n" +

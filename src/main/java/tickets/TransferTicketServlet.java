@@ -1,7 +1,6 @@
 package tickets;
 
-import events.AddEventServletConstants;
-import events.Event;
+
 import events.EventServletConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,9 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jdbc.DBCPDataSource;
 import jdbc.JDBCUtility;
 import login.LoginServerConstants;
-import login.NavigationBarConstants;
 import org.eclipse.jetty.http.HttpStatus;
-import utilities.UserInfo;
 import utilities.Utilities;
 
 import java.io.IOException;
@@ -21,7 +18,24 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+
+/**
+ * This class handles request of transferring tickets to user's friend.
+ * When a user wants to send some tickets to his/her friend, the other user's name, email, event's title and
+ * the number of tickets that the user would like to give are required.
+ *
+ * When successfully transfer, redirect to the user to home page.
+ *
+ * @author Li Liu
+ */
 public class TransferTicketServlet extends HttpServlet {
+
+    /**
+     * Get the page of transfer tickets.
+     * @param req request
+     * @param resp response
+     * @throws IOException IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // determine whether the user is already authenticated
@@ -46,6 +60,10 @@ public class TransferTicketServlet extends HttpServlet {
         Utilities.printRequireLogInPage(resp);
     }
 
+    /**
+     * Get and print all event title.
+     * @param writer writer
+     */
     private void getAndPrintAllEventTitle(PrintWriter writer) {
         try(Connection con = DBCPDataSource.getConnection()) {
             List<String> titles = JDBCUtility.selectAllEventTitle(con);
@@ -60,7 +78,12 @@ public class TransferTicketServlet extends HttpServlet {
     }
 
 
-
+    /**
+     * Handle transfer request.
+     * @param req request
+     * @param resp response
+     * @throws IOException IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // get user id

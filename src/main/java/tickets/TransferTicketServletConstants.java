@@ -137,7 +137,7 @@ public class TransferTicketServletConstants {
             "</head>\n" +
             "\n" +
             "<body>\n" +
-            "<h1 style=\"text-align:center;color:green;\">\n" +
+            "<h1 style=\"text-align:center;color:#8ac6d1;\">\n" +
             "    Successfully share tickets with friends!\n" +
             "</h1>\n" +
             "\n" +
