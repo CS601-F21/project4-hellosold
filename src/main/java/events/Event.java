@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class Event {
     private int id;
+    private int userId;
     private String title;
     private String sponsor;
     private String description;
@@ -17,6 +18,7 @@ public class Event {
     private Time time;
     private String place;
     private int tickets;
+    private String imagePath;
 
     /** Constructor. */
     public Event() {
@@ -32,9 +34,11 @@ public class Event {
      * @param time time
      * @param place place
      */
-    public Event(int id, String title, String sponsor, String description, Date date, Time time, String place,
+    public Event(int id, int userId, String title, String sponsor, String description, Date date, Time time,
+                 String place,
                  int tickets) {
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.sponsor = sponsor;
         this.description = description;
@@ -171,4 +175,27 @@ public class Event {
     public int getId() {
         return id;
     }
+    /**
+     * Getter of image path.
+     * @return path
+     */
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * Setter of image path.
+     */
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
 }
