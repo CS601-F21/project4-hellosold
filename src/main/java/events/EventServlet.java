@@ -43,13 +43,14 @@ public class EventServlet extends HttpServlet {
         if (clientInfoObj != null) {
             // already authed, no need to log in, go to the edit profile page
             resp.setStatus(HttpStatus.OK_200);
+            int userId = Utilities.getUserId(req);
             PrintWriter pw = resp.getWriter();
             pw.println(EventServletConstants.PAGE_HEADER);
             pw.println(NavigationBarConstants.NAVI_STYLE);
             pw.println(EventServletConstants.NAVI_BODY);
             pw.println("<h2>Events</h2>");
             // print and get all events
-            getAndPrintAllEvents(pw);
+            getAndPrintAllEvents(req, userId,pw);
             pw.println("<a href=\"events/add\">Add A Event.</a>");
             pw.println(EventServletConstants.PAGE_FOOTER);
             return;
@@ -63,7 +64,7 @@ public class EventServlet extends HttpServlet {
      * A helper method to get and print all events.
      * @param pw printWriter
      */
-    private void getAndPrintAllEvents(PrintWriter pw) {
+    private void getAndPrintAllEvents(HttpServletRequest req, int userId, PrintWriter pw) {
         pw.println(EventServletConstants.TABLE_STYLE);
         pw.println(EventServletConstants.BODY_OPEN_TAG);
         try (Connection con = DBCPDataSource.getConnection()) {
@@ -75,6 +76,8 @@ public class EventServlet extends HttpServlet {
             pw.println("    <th>Time</th>");
             pw.println("    <th>Tickets</th>");
             pw.println("    <th>More</th>");
+            pw.println("    <th>Edit</th>");
+            pw.println("    <th>Delete</th>");
             pw.println("  </tr>");
             for (Event e : events) {
                 pw.println("  <tr>");
@@ -83,6 +86,12 @@ public class EventServlet extends HttpServlet {
                 pw.println("    <th>" + e.getTime() + "</th>");
                 pw.println("    <th>" + e.getTickets() + "</th>");
                 pw.println("    <th><a href=\"events/" + e.getId()  + "\"><button>More</button></a></th>");
+                if (e.getUserId() == userId) {
+                    pw.println("    <th><form method=\"get\" action=\"events/edit/" + e.getId()  + "\">\n"
+                            + EventServletConstants.EDIT_BUTTON);
+                    pw.println("    <th><form method=\"post\" action=\"events/delete/" + e.getId()  + "\">\n"
+                            + EventServletConstants.DELETE_BUTTON);
+                }
                 pw.println("  </tr>");
                 pw.flush();
             }
@@ -92,4 +101,5 @@ public class EventServlet extends HttpServlet {
         }
 
     }
+
 }

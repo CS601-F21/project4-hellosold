@@ -55,9 +55,23 @@ public class EventServletConstants {
             "  background-color: #ffb6b9;\n" +
             "  color: white;" +
             "}" +
+            ".button1 {\n" +
+            "  background-color: #bbded6; \n" +
+            "  color: black; \n" +
+            "  border: 2px solid #bbded6;\n" +
+            "  border-radius: 12px;" +
+            "  color: white;" +
+            "}" +
             "\n</style>";
 
     public static String BODY_OPEN_TAG = "<body>\n" + "\n";
+    public static String EDIT_BUTTON = "    <button class=\"button button1\" type=\"submit\" name=\"edit\" " +
+            "value=\"edit\">Edit</button>\n" +
+            "</form></th>";
+
+    public static String DELETE_BUTTON = "    <button class=\"button\" type=\"submit\" name=\"delete\" " +
+            "value=\"delete\">Delete</button>\n" +
+            "</form></th>";
 
     public static String sponsor = "user_id";
     public static String TITLE = "title";
@@ -66,4 +80,7 @@ public class EventServletConstants {
     public static String TIME = "event_time";
     public static String PLACE = "event_place";
     public static String NUM_TICKET = "num_ticket";
+    public static String NUM = "num";
+    public static String IMAGE = "image";
+    public static String USER_ID = "user_id";
 }
