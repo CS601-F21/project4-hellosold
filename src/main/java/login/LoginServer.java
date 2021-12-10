@@ -7,25 +7,28 @@ import events.GetAEventServlet;
 import home.HomeServlet;
 import jdbc.DBCPDataSource;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import tickets.BuyTicketServlet;
+import org.eclipse.jetty.servlet.ServletHolder;
+import tickets.TransferTicketServlet;
 import utilities.Config;
 import utilities.Utilities;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
+/**
+ * To start ser
+ */
 public class LoginServer {
     public static final int PORT = 8080;
-    private static Connection con;
 
     public static void main(String[] args) {
-        try {
-            con = DBCPDataSource.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            con = DBCPDataSource.getConnection();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         try {
             startup();
@@ -37,6 +40,11 @@ public class LoginServer {
 
     /**
      * A helper method to start the server.
+     *
+     * Links for helping serving static files with embedded Jetty
+     * https://newbedev.com/serving-static-files-with-embedded-jetty
+     * https://stackoverflow.com/questions/10284584/serving-static-files-with-embedded-jetty
+     *
      * @throws Exception -- generic Exception thrown by server start method
      */
     public static void startup() throws Exception {
@@ -50,10 +58,17 @@ public class LoginServer {
         // attribute in the context
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setAttribute(LoginServerConstants.CONFIG_KEY, config);
+//        context.setContextPath("/");
+
+        DefaultServlet defaultServlet = new DefaultServlet();
+        ServletHolder holderPwd = new ServletHolder("default", defaultServlet);
+        holderPwd.setInitParameter("resourceBase", "images");
+
+        context.addServlet(holderPwd, "/*");
 
         // the default path will direct to a landing page with
         // "Login with Slack" button
-        context.addServlet(LandingServlet.class, "/");
+        context.addServlet(LandingServlet.class, "/landing");
 
         context.addServlet(HomeServlet.class, "/home");
 
@@ -72,8 +87,8 @@ public class LoginServer {
         context.addServlet(AddEventServlet.class, "/events/add");
         context.addServlet(GetAEventServlet.class, "/events/*");
 
-        // handle edit profile
-        context.addServlet(BuyTicketServlet.class, "/tickets/*");
+        // handle transfer tickets
+        context.addServlet(TransferTicketServlet.class, "/tickets");
 
         // start it up!
         server.setHandler(context);
