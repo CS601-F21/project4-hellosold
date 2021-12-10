@@ -58,7 +58,7 @@ public class LoginServer {
         // attribute in the context
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setAttribute(LoginServerConstants.CONFIG_KEY, config);
-//        context.setContextPath("/");
+        context.setContextPath("/");
 
         DefaultServlet defaultServlet = new DefaultServlet();
         ServletHolder holderPwd = new ServletHolder("default", defaultServlet);

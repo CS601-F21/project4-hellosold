@@ -17,7 +17,7 @@ public class LoginServerConstants {
             "    <li><a class=\"active\" href=\"/\">Home</a></li>\n" +
             "    <li><a href=\"/editprofile\">Edit Profile</a></li>\n" +
             "    <li><a href=\"/events\">Events</a></li>\n" +
-            "    <li><a href=\"/tickets\">Tickets</a></li>\n" +
+            "    <li><a href=\"/tickets\">Transfer Tickets</a></li>\n" +
             "    <li><a href=\"/logout\">Logout</a></li>\n" +
             "</ul>";
 
@@ -31,6 +31,33 @@ public class LoginServerConstants {
             "    If your browser supports Refresh,\n" +
             "    you'll be redirected to Landing Page, in 5 seconds.\n" +
             "</p>";
+
+    public static String LANDING_PAGE = "<!DOCTYPE html>\n" +
+            "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+            "<style>\n" +
+            "h1{\n" +
+            "    display: flex;\n" +
+            "    flex-direction: column;\n" +
+            "    justify-content: center;\n" +
+            "    text-align: center;\n" +
+            "}\n" +
+            ".div1{\n" +
+            "    text-align: center;\n" +
+            "}\n" +
+            "</style>\n" +
+            "<head>\n" +
+            "    <title>Welcome!</title>\n" +
+            "</head>\n" +
+            "\n" +
+            "<body style=\"background-color:#fae3d9;\">\n" +
+            "<h1>Welcome to the Naive Ticket Purchase Web Application.</h1>\n" +
+            "<div class=\"div1\">\n" +
+            "<img src=\"https://www.abc4.com/wp-content/uploads/sites/4/2018/12/movie-popcorn-entertainment_1530120399830_382133_ver1.0_47007319_ver1.0.jpg\"\n" +
+            "     alt=\"tickets-image\"\n" +
+            "     style=\"width:600px\"/>\n" +
+            "</div>\n" +
+            "\n" +
+            "<div class=\"div1\">";
 
     public static final String HOST = "slack.com";
     public static final String AUTH_PATH = "openid/connect/authorize";

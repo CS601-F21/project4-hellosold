@@ -62,9 +62,8 @@ public class LandingServlet extends HttpServlet {
 
         resp.setStatus(HttpStatus.OK_200);
         PrintWriter writer = resp.getWriter();
-        writer.println(LoginServerConstants.PAGE_HEADER);
-        writer.println("<h1>Welcome to the Login with Slack Demo Application</h1>");
-        writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>");
+        writer.println(LoginServerConstants.LANDING_PAGE);
+        writer.println("<a href=\""+url+"\"><img src=\"" + LoginServerConstants.BUTTON_URL +"\"/></a>\n</div>");
         writer.println(LoginServerConstants.PAGE_FOOTER);
     }
 

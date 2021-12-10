@@ -32,21 +32,18 @@ public class TransferTicketServlet extends HttpServlet {
             // already authed, no need to log in, go to the edit profile page
             resp.setStatus(HttpStatus.OK_200);
             writer.println(TransferTicketServletConstants.PAGE_HEADER);
-            writer.println(NavigationBarConstants.NAVI_STYLE);
-            writer.println(TransferTicketServletConstants.BUTTON_STYLE);
+            writer.println(TransferTicketServletConstants.STYLE);
+            writer.println(TransferTicketServletConstants.BODY_OPEN_TAG);
             writer.println(TransferTicketServletConstants.NAVI_BODY);
             writer.println(TransferTicketServletConstants.MESSAGE);
-            writer.println(TransferTicketServletConstants.BODY_OPEN_TAG);
             writer.println(TransferTicketServletConstants.GET_INPUT);
             getAndPrintAllEventTitle(writer);
             writer.println(TransferTicketServletConstants.SUBMIT_BUTTON);
             writer.println(EventServletConstants.PAGE_FOOTER);
             return;
         }
-        resp.setStatus(HttpStatus.OK_200);
-        writer.println(LoginServerConstants.PAGE_HEADER);
-        writer.println(LoginServerConstants.REDIRECT_TO_LOG_IN);
-        writer.println(LoginServerConstants.PAGE_FOOTER);
+        // redirect to landing page
+        Utilities.printRequireLogInPage(resp);
     }
 
     private void getAndPrintAllEventTitle(PrintWriter writer) {
@@ -54,9 +51,8 @@ public class TransferTicketServlet extends HttpServlet {
             List<String> titles = JDBCUtility.selectAllEventTitle(con);
             if (titles.size() != 0) {
                 for (String t : titles)
-                    writer.println("<input type=\"radio\" id=1 name=\"title\"/ value=\"" +
-                                    t + "\">\n" + t +
-                            "    <label></label><br />");
+                    writer.println("<input type=\"radio\" id=\"1\" name=\"title\" value=\"" + t + "\">\n" +
+                            "    <label class=\"label2\">" + t + "</label><br>");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,19 +89,6 @@ public class TransferTicketServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-//        if (Utilities.isDigit(event_id)) {
-//            int eventId = Integer.parseInt(event_id.substring(1));
-//            // buy a ticket
-//            try (Connection con = DBCPDataSource.getConnection()) {
-//                JDBCUtility.executeBuyTicket(con, userId, eventId, 2);
-//                writer.println(BuyTicketServletConstants.POST_PAGE);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            writer.println("<p>Resource is not available.</p>");
-//        }
-
     }
 
 }

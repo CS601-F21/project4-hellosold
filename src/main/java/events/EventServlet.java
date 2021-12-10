@@ -46,12 +46,13 @@ public class EventServlet extends HttpServlet {
             int userId = Utilities.getUserId(req);
             PrintWriter pw = resp.getWriter();
             pw.println(EventServletConstants.PAGE_HEADER);
-            pw.println(NavigationBarConstants.NAVI_STYLE);
+            pw.println(EventServletConstants.EVENTS_STYLE);
+            pw.println(EventServletConstants.BODY_OPEN_TAG);
             pw.println(EventServletConstants.NAVI_BODY);
             pw.println("<h2>Events</h2>");
             // print and get all events
             getAndPrintAllEvents(req, userId,pw);
-            pw.println("<a href=\"events/add\">Add A Event.</a>");
+            pw.println("<br/><a class=\"one\" href=\"events/add\">Create a new event.</a>");
             pw.println(EventServletConstants.PAGE_FOOTER);
             return;
         }
@@ -65,8 +66,6 @@ public class EventServlet extends HttpServlet {
      * @param pw printWriter
      */
     private void getAndPrintAllEvents(HttpServletRequest req, int userId, PrintWriter pw) {
-        pw.println(EventServletConstants.TABLE_STYLE);
-        pw.println(EventServletConstants.BODY_OPEN_TAG);
         try (Connection con = DBCPDataSource.getConnection()) {
             ArrayList<Event> events = JDBCUtility.executeSelectEvents(con);
             pw.println("<table>");
@@ -91,6 +90,9 @@ public class EventServlet extends HttpServlet {
                             + EventServletConstants.EDIT_BUTTON);
                     pw.println("    <th><form method=\"post\" action=\"events/delete/" + e.getId()  + "\">\n"
                             + EventServletConstants.DELETE_BUTTON);
+                } else {
+                    pw.println(EventServletConstants.EDIT_BUTTON_INACTIVE);
+                    pw.println(EventServletConstants.DELETE_BUTTON_INACTIVE);
                 }
                 pw.println("  </tr>");
                 pw.flush();

@@ -48,11 +48,11 @@ public class AddEventServlet extends HttpServlet {
             resp.setStatus(HttpStatus.OK_200);
             PrintWriter pw = resp.getWriter();
             pw.println(EventServletConstants.PAGE_HEADER);
-            pw.println(NavigationBarConstants.NAVI_STYLE);
-            pw.println(AddEventServletConstants.INPUT_STYLE);
-            pw.println(EventServletConstants.NAVI_BODY);
-            pw.println("<h2>Events</h2>");
+            pw.println(AddEventServletConstants.STYLE);
             pw.println(EventServletConstants.BODY_OPEN_TAG);
+            pw.println(EventServletConstants.NAVI_BODY);
+            pw.println("<h2>Add a event:</h2>");
+
             pw.println(AddEventServletConstants.ADD_BODY);
             pw.println(EventServletConstants.PAGE_FOOTER);
             return;

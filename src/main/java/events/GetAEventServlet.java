@@ -41,17 +41,9 @@ public class GetAEventServlet extends HttpServlet {
         if (clientInfoObj != null) {
             // already authed, no need to log in, go to the edit profile page
             resp.setStatus(HttpStatus.OK_200);
-            PrintWriter pw = resp.getWriter();
-            pw.println(EventServletConstants.PAGE_HEADER);
-            pw.println(NavigationBarConstants.NAVI_STYLE);
-            pw.println(EventServletConstants.NAVI_BODY);
-            pw.println("<body>\n");
-            pw.println("<h1>Event Information</h1>");
             parseRequest(req, resp);
-            pw.println(EventServletConstants.PAGE_FOOTER);
             return;
         }
-
         // not logged in, require user to log in
         Utilities.printRequireLogInPage(resp);
     }
@@ -105,19 +97,34 @@ public class GetAEventServlet extends HttpServlet {
                 if (event == null) {
                     writer.println("<p>Something went wrong of the database.</p>");
                 } else {
-                    writer.println("<p> Title: " + event.getTitle() + "</p>\n");
-                    writer.println("<p> Date: " + event.getDate() + "</p>\n");
-                    writer.println("<p> Time: " + event.getTime() + "</p>\n");
-                    writer.println("<p> Publish by: " + event.getSponsor() + "</p>\n");
-                    writer.println("<p> Place: " + event.getPlace() + "</p>\n");
-                    writer.println("<p> Description: " + event.getDescription() + "</p>\n");
-                    writer.println("<p> Remaining tickets: " + event.getTickets() + "</p>\n");
+                    writer.println(EventServletConstants.PAGE_HEADER);
+                    writer.println(EventServletConstants.GET_EVENT_STYLE);
+                    writer.println(EventServletConstants.BODY_OPEN_TAG);
+                    writer.println(EventServletConstants.NAVI_BODY);
+                    writer.println("<h2>Event Information:</h2>");
+                    writer.println("<label>Title:</label><br/>");
+                    writer.println("<p>" + event.getTitle() + "</p>");
+                    writer.println("<label>Date:</label><br/>");
+                    writer.println("<p>" + event.getDate() + "</p>");
+                    writer.println("<label>Time:</label><br/>");
+                    writer.println("<p>" + event.getTime() + "</p>");
+                    writer.println("<label>Publish by: </label><br/>");
+                    writer.println("<p>" + event.getSponsor() + "</p>");
+                    writer.println("<label> Place: </label><br/>");
+                    writer.println("<p>" + event.getPlace() + "</p>");
+                    writer.println("<label> Description: </label><br/>");
+                    writer.println("<p>" + event.getDescription() + "</p>");
+                    writer.println("<label> Remaining tickets: </label><br/>");
+                    writer.println("<p>" + event.getTickets() + "</p>");
+                    writer.println("<label>Image:</label><br/>");
                     writer.println("<img src=\"https://61ec-67-169-155-8.ngrok.io/" + event.getImagePath() +
                             "\" alt=\"poster\" width=\"500px\" height=\"300px\"/>");
-                    writer.println("<form action=\"/events/" + eventId +"\" method=\"post\">\n" +
-                            "    <input type=\"text\" id=\"num\" name=\"num\" />\n" +
+                    writer.println("<hr/>Please input the number of tickets that you want to buy:<br/>\n");
+                    writer.println("<form action=\"/events/" + eventId + "\" method=\"post\">\n" +
+                            "    <input type=\"number\" id=\"num\" name=\"num\" required=\"required\"/>" +
                             "    <input type=\"submit\" value=\"BUY\"/>\n" +
                             "</form>");
+                    writer.println(EventServletConstants.PAGE_FOOTER);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -218,23 +225,26 @@ public class GetAEventServlet extends HttpServlet {
             Event event = JDBCUtility.executeGetEvent(connection, eventId);
             PrintWriter writer = response.getWriter();
             writer.println(EventServletConstants.PAGE_HEADER);
+            writer.println(EventServletConstants.Edit_EVENT_STYLE);
             writer.println(EventServletConstants.BODY_OPEN_TAG);
+            writer.println(EventServletConstants.NAVI_BODY);
+            writer.println("<h2>Edit a event:</h2>");
             writer.println("<form action=\"/events/edit/" + eventId + "\" method=\"post\">\n" +
-                    "    <label for=\"title\">Title:</label>\n" +
+                    "    <label for=\"title\">Title:</label><br/>\n" +
                     "    <input type=\"text\" id=\"title\" name=\"title\" value=\"" + event.getTitle() + "\"/><br/><br/>");
-            writer.println("<label for=\"date\">Date:</label>\n" +
+            writer.println("<label for=\"date\">Date:</label><br/>\n" +
                     "    <input type=\"date\" id=\"date\" name=\"date\" value=\"" + event.getDate() + "\"/><br/><br/>");
-            writer.println("<label for=\"time\">Time:</label>\n" +
+            writer.println("<label for=\"time\">Time:</label><br/>\n" +
                     "    <input type=\"time\" id=\"time\" name=\"time\" min=\"00:00:00\" max=\"24:00:00\"" +
                     "value=\"" + event.getTime() + "\"/>\n" +
                     "    <br/><br/>");
-            writer.println("<label for=\"place\">Place:</label>\n" +
+            writer.println("<label for=\"place\">Place:</label><br/>\n" +
                     "    <input type=\"text\" id=\"place\" name=\"place\" value=\"" + event.getPlace() + "\"/> " +
                     "<br/><br/>");
-            writer.println("<label for=\"ticket\">Total tickets:</label>\n" +
+            writer.println("<label for=\"ticket\">Total tickets:</label><br/>\n" +
                     "    <input type=\"number\" id=\"ticket\" name=\"ticket\" value=\"" + event.getTickets() + "\"/> " +
                     "<br/><br/>");
-            writer.println("<label for=\"description\">Description:</label><br />\n" +
+            writer.println("<label for=\"description\">Description:</label><br/>\n" +
                     "    <textarea type=\"text\" id=\"description\" name=\"description\" rows=\"5\" cols=\"40\">" +
                     event.getDescription() + "</textarea>\n<br/><br/>");
             writer.println("    <input type=\"submit\" value=\"Edit\"/> <br/>\n" +
