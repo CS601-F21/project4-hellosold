@@ -91,9 +91,11 @@ public class AddEventServlet extends HttpServlet {
         try (Connection con = DBCPDataSource.getConnection()) {
             JDBCUtility.executeAddEvent(con, userId, description, date, time, place, title, ticket, filePath);
             resp.setStatus(HttpStatus.OK_200);
-
-            writer.println("<h1>Added a new event.");
+            writer.println(EventServletConstants.PAGE_HEADER);
+            writer.println(EventServletConstants.BODY_OPEN_TAG);
+            writer.println("<h1>Added a new event.</h1>");
             writer.println("<a href=https://61ec-67-169-155-8.ngrok.io/events>See all events</a>");
+            writer.println(EventServletConstants.PAGE_FOOTER);
         } catch (SQLException e) {
             resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             e.printStackTrace();

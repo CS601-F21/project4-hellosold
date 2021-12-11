@@ -360,7 +360,7 @@ public class GetAEventServlet extends HttpServlet {
         String title = request.getParameter(EventServletConstants.TITLE);
         java.sql.Date date = java.sql.Date.valueOf(request.getParameter(AddEventServletConstants.DATE));
         Time time = Time.valueOf(request.getParameter(AddEventServletConstants.TIME));
-        String place = request.getParameter(EventServletConstants.PLACE);
+        String place = request.getParameter("place");
         int num = Integer.parseInt(request.getParameter("ticket"));
         String description = request.getParameter(EventServletConstants.DESCRIPTION);
 

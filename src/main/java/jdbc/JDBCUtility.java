@@ -5,6 +5,7 @@ import events.EventServletConstants;
 import login.LoginServerConstants;
 import tickets.Ticket;
 import tickets.TransferTicket;
+import utilities.UserInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,36 +40,36 @@ public class JDBCUtility {
 
         // Get user id
         int userId;
-        try (ResultSet generatedKeys = insertUserStmt.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                userId = generatedKeys.getInt(1);
-                System.out.println("userId is: " + userId);
-                return userId;
-            } else {
-                throw new SQLException("Creating user failed, no ID obtained.");
-            }
+        String selectUser = "SELECT id FROM users WHERE email=?";
+        PreparedStatement selectUserStmt = con.prepareStatement(selectUser);
+        selectUserStmt.setString(1, email);
+        ResultSet rs = selectUserStmt.executeQuery();
+        while (rs.next()) {
+            userId = rs.getInt("id");
+            return userId;
         }
+        return 0;
     }
 
     /**
      * Get a user information by providing the user name and email.
      * @param con con
-     * @param name user name
      * @param email user email
-     * @return user id
+     * @return user
      * @throws SQLException SQLException
      */
-    public static int executeSelectUser(Connection con, String name, String email) throws SQLException {
-        String selectUserSql = "SELECT * FROM users WHERE name = ? AND email = ?;";
+    public static UserInfo executeSelectUser(Connection con, String email) throws SQLException {
+        String selectUserSql = "SELECT * FROM users WHERE email = ?;";
         PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-        selectUserStmt.setString(1, name);
-        selectUserStmt.setString(2, email);
+        selectUserStmt.setString(1, email);
         ResultSet results = selectUserStmt.executeQuery();
         int userId = 0;
-        if (results.next()) {
+        String name = "";
+        while (results.next()) {
             userId = results.getInt("id");
+            name = results.getString("name");
         }
-        return userId;
+        return new UserInfo(userId, name, email);
     }
 
     /**
@@ -429,6 +430,14 @@ public class JDBCUtility {
             updateStmt.setInt(1, newNum);
             updateStmt.setInt(2, ticketId);
             updateStmt.executeUpdate();
+
+            // insertInto purchases table
+            String insertPur = "INSERT INTO purchases (user_id, event_id, num) VALUES (?, ?, ?)";
+            PreparedStatement insertStmt = con.prepareStatement(insertPur);
+            insertStmt.setInt(1, toUser);
+            insertStmt.setInt(2, eventId);
+            insertStmt.setInt(3, num);
+            insertStmt.executeUpdate();
         }
 
         // insert into transfers table

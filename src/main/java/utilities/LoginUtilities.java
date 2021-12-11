@@ -137,18 +137,20 @@ public class LoginUtilities {
         String email = (String) payloadMap.get(LoginServerConstants.EMAIL_KEY);
 
         // check if user is already in the users tale
+        UserInfo user = null;
         int userId = 0;
         try {
             Connection con = DBCPDataSource.getConnection();
             // if user is not in the users table, store user into the table
-            userId = JDBCUtility.executeSelectUser(con, name, email);
-            if (userId == 0) {
+            user = JDBCUtility.executeSelectUser(con, email);
+            if (user.getId() == 0) {
                 userId = JDBCUtility.executeAddNewUser(con, name, email);
+                return new UserInfo(userId, name, email);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new UserInfo(userId, name, email);
+        return user;
     }
 
     /**

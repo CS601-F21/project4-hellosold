@@ -107,7 +107,7 @@ public class TransferTicketServlet extends HttpServlet {
                 if (result) {
                     writer.println(TransferTicketServletConstants.POST_PAGE);
                 } else {
-                    writer.println("<p>There aren't enough tickets.</p>");
+                    writer.println("<p>You don't have enough tickets.</p>");
                 }
             }
         } catch (SQLException e) {

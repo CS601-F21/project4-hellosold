@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public class HomeServlet extends HttpServlet {
             writer.println("<h2>Tickets:</h2>");
             for (Ticket t : tickets) {
                 event = t.getEvent();
-                writer.println("  <h4>Title:" + event.getTitle() + "</h4>");
+                writer.println("  <h4>Title: " + event.getTitle() + "</h4>");
                 writer.println("    <p> Date: " + event.getDate() + "</p>");
                 writer.println("    <p> Time: " + event.getTime() + "</p>");
                 writer.println("    <p> Place: " + event.getPlace() + "</p>");
@@ -101,9 +102,10 @@ public class HomeServlet extends HttpServlet {
     private void getAndPrintALlTransferTickets(int userId, PrintWriter writer) {
         try (Connection con = DBCPDataSource.getConnection()) {
             List<TransferTicket> transTik = JDBCUtility.executeGetAllTransfers(con, userId);
-            if (transTik.size() != 0) {
+            List<TransferTicket> ticks = assembleTransTickets(transTik);
+            if (ticks.size() != 0) {
                 writer.println("<h2>Transfer tickets: </h2>");
-                for (TransferTicket ticket : transTik) {
+                for (TransferTicket ticket : ticks) {
                     writer.println("<h4>Title: " + ticket.getEventTitle() + "</h4>");
                     writer.println("  <p> Transfer to user: " + ticket.getToUser() + "</p>");
                     writer.println("  <p> Number of Tickets: " + ticket.getNum() + "</p>");
@@ -112,5 +114,31 @@ public class HomeServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sum all tickets that a user given to other users.
+     * @param tickets tickets
+     * @return list of trans tickets
+     */
+    private List<TransferTicket> assembleTransTickets(List<TransferTicket> tickets) {
+        List<TransferTicket> result = new ArrayList<>();
+        if (tickets.size() != 0) {
+            Map<String, Integer> map = new HashMap<>();
+            Map<String, String> nameMap = new HashMap<>();
+            for (TransferTicket ticket : tickets) {
+                String title = ticket.getEventTitle();
+                if (map.containsKey(title)) {
+                    map.put(title, map.get(title) + ticket.getNum());
+                } else {
+                    map.put(title, ticket.getNum());
+                }
+                nameMap.put(title, ticket.getToUser());
+            }
+            for (String t : map.keySet()) {
+                result.add(new TransferTicket(nameMap.get(t), t, map.get(t)));
+            }
+        }
+        return result;
     }
 }
