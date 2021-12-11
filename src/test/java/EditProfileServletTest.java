@@ -5,12 +5,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpStatus;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import utilities.Utilities;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -94,6 +96,9 @@ public class EditProfileServletTest {
             // Use Mockito library to create mocked request and response
             HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse mockedResponse = Mockito.mock(HttpServletResponse.class);
+            // write output to textfile
+            PrintWriter writer = new PrintWriter("somefile.txt");
+            when(mockedResponse.getWriter()).thenReturn(writer);
             // We also need a mocked context to return the data structure
             ServletContext context = Mockito.mock(ServletContext.class);
 
@@ -103,6 +108,8 @@ public class EditProfileServletTest {
             when(mockedRequest.getServletContext()).thenReturn(context);
             // set up the mocked context to return the data structure
             when(context.getAttribute("data")).thenReturn(data);
+            mockedRequest.setAttribute("gender", "female");
+            mockedRequest.setAttribute("location", "Fremont");
 
             // Execute the mocked request
             EditProfileServlet ts = new EditProfileServlet();
@@ -131,6 +138,9 @@ public class EditProfileServletTest {
             HttpServletResponse mockedResponse = Mockito.mock(HttpServletResponse.class);
             // We also need a mocked context to return the data structure
             ServletContext context = Mockito.mock(ServletContext.class);
+            // write output to textfile
+            PrintWriter writer = new PrintWriter("somefile.txt");
+            when(mockedResponse.getWriter()).thenReturn(writer);
 
             // set up the mocked request to return a correct parameter value
             when(mockedRequest.getParameter("name")).thenReturn(expected);
@@ -138,6 +148,8 @@ public class EditProfileServletTest {
             when(mockedRequest.getServletContext()).thenReturn(context);
             // set up the mocked context to return the data structure
             when(context.getAttribute("data")).thenReturn(data);
+            mockedRequest.setAttribute("gender", "female");
+            mockedRequest.setAttribute("location", "Fremont");
 
             // Execute the mocked request
             EditProfileServlet ts = new EditProfileServlet();
@@ -147,4 +159,7 @@ public class EditProfileServletTest {
             fail(e.getMessage());
         }
     }
+
+
+
 }

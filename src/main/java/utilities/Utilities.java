@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Utilities {
     public static final String configFileName = "config.json";
-    public static final String session = "JSESSIONID=node01bw63o70r7ct2sz7xt657nk1a0.node0";
+    public static final String session = "JSESSIONID=node0220ngt43d2p91m60oqqapd64s0.node0";
 
     /**
      * Read in the configuration file.

@@ -120,7 +120,7 @@ public class TransferTicketServletConstants {
             "    <input type=\"email\" name=\"email\" id=\"email\" placeholder=\"example@email.com\" required=\"required\" /><br /><br />\n" +
             "\n" +
             "    <label class=\"label1\" for=\"num\"><b>Number: </b></label><br/>\n" +
-            "    <input type=\"number\" placeholder=\"number of tickets\" name=\"num\" id=\"num\" required /><br " +
+            "    <input type=\"number\" placeholder=\"number of tickets\" name=\"num\" id=\"num\" required=\"required\"  /><br " +
             "/><br />";
 
     public static String SUBMIT_BUTTON = "    <input type=\"submit\" value=\"Send\"/>\n" +

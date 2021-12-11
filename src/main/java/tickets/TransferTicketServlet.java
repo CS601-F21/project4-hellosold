@@ -92,6 +92,7 @@ public class TransferTicketServlet extends HttpServlet {
 
         // get event title, name, email and num from payload
         String eventTitle = req.getParameter(EventServletConstants.TITLE);
+        System.out.println("title is" + eventTitle);
         String toName = req.getParameter(LoginServerConstants.NAME_KEY);
         String toEmail = req.getParameter(LoginServerConstants.EMAIL_KEY);
         int num = Integer.parseInt(req.getParameter(EventServletConstants.NUM));

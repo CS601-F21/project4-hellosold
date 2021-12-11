@@ -144,10 +144,16 @@ public class GetAEventServlet extends HttpServlet {
      * @throws IOException IOException
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         parsePath(req, resp);
     }
 
+    /**
+     * Handle buy tickets events.
+     * @param request request
+     * @param response response
+     * @throws IOException IOException
+     */
     private void handleBuyEvent(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // get user id
         int userId = Utilities.getUserId(request);
@@ -232,7 +238,7 @@ public class GetAEventServlet extends HttpServlet {
             writer.println("<label for=\"date\">Date:</label><br/>\n" +
                     "    <input type=\"date\" id=\"date\" name=\"date\" value=\"" + event.getDate() + "\"/><br/><br/>");
             writer.println("<label for=\"time\">Time:</label><br/>\n" +
-                    "    <input type=\"time\" id=\"time\" name=\"time\" min=\"00:00:00\" max=\"24:00:00\"" +
+                    "    <input type=\"time\" id=\"time\" name=\"time\" min=\"00:00:00\" max=\"24:00:00\" " +
                     "value=\"" + event.getTime() + "\"/>\n" +
                     "    <br/><br/>");
             writer.println("<label for=\"place\">Place:</label><br/>\n" +
@@ -264,14 +270,23 @@ public class GetAEventServlet extends HttpServlet {
         int eventID = Integer.parseInt(path.substring(idx + 8));
         System.out.println("eventId is: " + eventID);
 
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // delete event from the database
         try (Connection connection = DBCPDataSource.getConnection()) {
             JDBCUtility.executeDeleteEvent(connection, eventID);
-            response.getWriter().println(LoginServerConstants.PAGE_HEADER);
-            response.getWriter().println("<h1>Delete event!</h1>");
-            response.getWriter().println(LoginServerConstants.PAGE_FOOTER);
-        } catch (SQLException | IOException e) {
+            writer.println(LoginServerConstants.PAGE_HEADER);
+            writer.println("<h1>Delete event!</h1>");
+            writer.println(LoginServerConstants.PAGE_FOOTER);
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
+            writer.println(LoginServerConstants.PAGE_HEADER);
+            writer.println("<h1>Cannot delete such event, some users still hold the tickets.</h1>");
+            writer.println(LoginServerConstants.PAGE_FOOTER);
         }
     }
 

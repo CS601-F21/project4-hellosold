@@ -1,37 +1,24 @@
-import editProfile.EditProfileServlet;
-import events.AddEventServlet;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.mockito.Mockito;
 import utilities.Utilities;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AddEventServletTest {
-    private String url = "https://61ec-67-169-155-8.ngrok.io/events/add";
+public class TransferTicketServletTest {
+
+    private String url = "https://61ec-67-169-155-8.ngrok.io/tickets";
 
     @Test
     // Test valid xhtml file of get request when user not logged in
-    public void testGetAddAEvent() {
+    public void testGetRequest() {
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));
             HttpRequest request = builder.GET()
@@ -95,5 +82,4 @@ public class AddEventServletTest {
             e.printStackTrace();
         }
     }
-
 }

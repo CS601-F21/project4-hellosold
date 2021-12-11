@@ -69,7 +69,7 @@ public class AddEventServlet extends HttpServlet {
      * @throws IOException ioexception
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // get user id
         int userId = Utilities.getUserId(req);
         PrintWriter writer = resp.getWriter();

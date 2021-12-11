@@ -62,7 +62,7 @@ public class HomeServlet extends HttpServlet {
         List<Ticket> tickets = assembleTickets(userId);
         Event event;
         if (tickets.size() != 0) {
-            writer.println("<h2>Tickets:<h2>");
+            writer.println("<h2>Tickets:</h2>");
             for (Ticket t : tickets) {
                 event = t.getEvent();
                 writer.println("  <h4>Title:" + event.getTitle() + "</h4>");
