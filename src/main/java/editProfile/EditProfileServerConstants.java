@@ -186,7 +186,7 @@ public class EditProfileServerConstants {
             <h2 style="text-align:center">User Profile Card</h2>
 
             <div class="card">
-              <img src="https://png.pngitem.com/pimgs/s/130-1300380_female-user-image-icon-hd-png-download.png" alt="John" style="width:100%">""";
+              <img src="https://png.pngitem.com/pimgs/s/130-1300380_female-user-image-icon-hd-png-download.png" alt="John" style="width:100%"/>""";
 
     public static final String POST_FOOTER = """
             </div>

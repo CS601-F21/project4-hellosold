@@ -22,7 +22,7 @@ public class LoginServerConstants {
             "</ul>";
 
     public static String REDIRECT_TO_LOG_IN = "    <meta http-equiv=\"refresh\"\n" +
-            "          content=\"5; url = https://61ec-67-169-155-8.ngrok.io/landing\" />\n" +
+            "          content=\"5; url = https://61ec-67-169-155-8.ngrok.io/landing\" ></meta>\n" +
             "<h1 style=\"text-align:center;color:#ffb6b9;\">\n" +
             "    Please log in.\n" +
             "</h1>\n" +

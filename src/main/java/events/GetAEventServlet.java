@@ -279,11 +279,13 @@ public class GetAEventServlet extends HttpServlet {
         // delete event from the database
         try (Connection connection = DBCPDataSource.getConnection()) {
             JDBCUtility.executeDeleteEvent(connection, eventID);
+            response.setStatus(HttpStatus.OK_200);
             writer.println(LoginServerConstants.PAGE_HEADER);
             writer.println("<h1>Delete event!</h1>");
             writer.println(LoginServerConstants.PAGE_FOOTER);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             writer.println(LoginServerConstants.PAGE_HEADER);
             writer.println("<h1>Cannot delete such event, some users still hold the tickets.</h1>");
             writer.println(LoginServerConstants.PAGE_FOOTER);
@@ -364,6 +366,7 @@ public class GetAEventServlet extends HttpServlet {
 
         // update events table
         try(Connection connection = DBCPDataSource.getConnection()) {
+            response.setStatus(HttpStatus.OK_200);
             JDBCUtility.executeUpdateEvent(connection, eventId, title, description, date, time, place, num);
             response.sendRedirect("/events/" + eventId);
         } catch (SQLException | IOException e) {

@@ -50,7 +50,7 @@ public class EventServlet extends HttpServlet {
             pw.println(EventServletConstants.NAVI_BODY);
             pw.println("<h2>Events</h2>");
             // print and get all events
-            getAndPrintAllEvents(req, userId,pw);
+            getAndPrintAllEvents(req, resp, userId,pw);
             pw.println("<br/><a class=\"one\" href=\"events/add\">Create a new event.</a>");
             pw.println(EventServletConstants.PAGE_FOOTER);
             return;
@@ -64,7 +64,8 @@ public class EventServlet extends HttpServlet {
      * A helper method to get and print all events.
      * @param pw printWriter
      */
-    private void getAndPrintAllEvents(HttpServletRequest req, int userId, PrintWriter pw) {
+    private void getAndPrintAllEvents(HttpServletRequest req, HttpServletResponse response, int userId,
+                                      PrintWriter pw) {
         try (Connection con = DBCPDataSource.getConnection()) {
             ArrayList<Event> events = JDBCUtility.executeSelectEvents(con);
             pw.println("<table>");
@@ -98,6 +99,7 @@ public class EventServlet extends HttpServlet {
             }
             pw.println("</table>");
         } catch (SQLException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             e.printStackTrace();
         }
 

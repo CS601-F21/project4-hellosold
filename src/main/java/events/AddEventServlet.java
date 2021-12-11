@@ -74,8 +74,9 @@ public class AddEventServlet extends HttpServlet {
         int userId = Utilities.getUserId(req);
         PrintWriter writer = resp.getWriter();
         // store image
-        String filePath = uploadImage(req);
+        String filePath = uploadImage(req, resp);
         if (filePath == null) {
+            resp.setStatus(HttpStatus.BAD_REQUEST_400);
             writer.println(AddEventServletConstants.ALERT);
             return;
         }
@@ -94,6 +95,7 @@ public class AddEventServlet extends HttpServlet {
             writer.println("<h1>Added a new event.");
             writer.println("<a href=https://61ec-67-169-155-8.ngrok.io/events>See all events</a>");
         } catch (SQLException e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             e.printStackTrace();
         }
     }
@@ -106,7 +108,7 @@ public class AddEventServlet extends HttpServlet {
      * @param request request
      * @return image path
      */
-    private String uploadImage(HttpServletRequest request) {
+    private String uploadImage(HttpServletRequest request, HttpServletResponse resp) {
         // upload image and then store image under directory /temp
         if (request.getContentType().startsWith("multipart/")) {
             request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT,
@@ -114,10 +116,13 @@ public class AddEventServlet extends HttpServlet {
         }
         try {
             Part filePart = request.getPart(AddEventServletConstants.FILE);
+            if (filePart == null)
+                return null;
             String fileName = filePart.getSubmittedFileName();
             filePart.write(AddEventServletConstants.PATH + fileName);
             return fileName;
         } catch (ServletException | IOException e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             e.printStackTrace();
         }
         return null;

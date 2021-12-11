@@ -142,7 +142,7 @@ public class AddEventServletConstants {
             <!DOCTYPE html>
             <html>
             <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
             <style>
             .alert {
               padding: 20px;
@@ -172,7 +172,7 @@ public class AddEventServletConstants {
 
             <p>Click on the "x" symbol to close the alert message.</p>
             <div class="alert">
-              <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>\s
+              <span class="closebtn" onclick="this.parentElement.style.display='none';">&#215;</span>\s
               <strong>Ooops!</strong> File not upload successfully.
             </div>
 

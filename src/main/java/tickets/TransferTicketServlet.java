@@ -69,8 +69,8 @@ public class TransferTicketServlet extends HttpServlet {
             List<String> titles = JDBCUtility.selectAllEventTitle(con);
             if (titles.size() != 0) {
                 for (String t : titles)
-                    writer.println("<input type=\"radio\" id=\"1\" name=\"title\" value=\"" + t + "\">\n" +
-                            "    <label class=\"label2\">" + t + "</label><br>");
+                    writer.println("<input type=\"radio\" id=\"1\" name=\"title\" value=\"" + t + "\"/>\n" +
+                            "    <label class=\"label2\">" + t + "</label></br>");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,19 +85,19 @@ public class TransferTicketServlet extends HttpServlet {
      * @throws IOException IOException
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // get user id
         int userId = Utilities.getUserId(req);
         PrintWriter writer = resp.getWriter();
 
         // get event title, name, email and num from payload
         String eventTitle = req.getParameter(EventServletConstants.TITLE);
-        System.out.println("title is" + eventTitle);
         String toName = req.getParameter(LoginServerConstants.NAME_KEY);
         String toEmail = req.getParameter(LoginServerConstants.EMAIL_KEY);
         int num = Integer.parseInt(req.getParameter(EventServletConstants.NUM));
 
         try (Connection con = DBCPDataSource.getConnection()) {
+            resp.setStatus(HttpStatus.OK_200);
             int toId = JDBCUtility.executeFindUser(con, toName, toEmail);
             if (toId == 0)
                 writer.println("<p>User doesn't exist, please check make sure the input name and email are correct.</p>");
@@ -111,7 +111,8 @@ public class TransferTicketServlet extends HttpServlet {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+            writer.println(e.getMessage());
         }
     }
 
