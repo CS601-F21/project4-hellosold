@@ -174,13 +174,7 @@ public class LoginUtilities {
         // convert the id_token payload to a map
         Map<String, Object> payloadMap = gson.fromJson(new StringReader(payload), Map.class);
 
-//        for (Map.Entry<String, Object> entry : payloadMap.entrySet()) {
-//            System.out.println(entry.getKey() + " : " + entry.getValue().toString());
-//        }
         return payloadMap;
     }
 
-    public static void main(String[] args) {
-        System.out.println(generateSlackAuthorizeURL("abc", "123", "def", "url"));
-    }
 }
