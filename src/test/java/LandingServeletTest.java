@@ -16,24 +16,6 @@ public class LandingServeletTest {
     private String url = "https://61ec-67-169-155-8.ngrok.io/landing";
 
     @Test
-    // Test valid xhtml file of get request when user not logged in
-    public void testGetLanding() {
-        try {
-            HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url));
-            HttpRequest request = builder.GET()
-                    .build();
-            HttpClient client = HttpClient.newHttpClient();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            String resBody = response.body();
-
-            boolean actual = Utilities.isValid(resBody);
-            assertTrue(actual);
-        } catch (IOException | URISyntaxException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
     // Test status code of a valid get request when user not logged in
     public void testGetStatusCode() {
         try {

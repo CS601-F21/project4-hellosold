@@ -27,7 +27,7 @@ public class ConfigTest {
 
     @Test
     public void getRedirect_uri() {
-        String expect = "https://bd15-67-169-155-8.ngrok.io/login";
+        String expect = "https://61ec-67-169-155-8.ngrok.io/login";
         String actual = config.getRedirect_uri();
         assertEquals(expect, actual);
     }

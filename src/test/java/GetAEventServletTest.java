@@ -52,7 +52,7 @@ public class GetAEventServletTest {
     @Test
     // Test the content of getting a event with event_id = 1
     public void testGetEventContent() {
-        String expected = "Title: Live Music And Holiday Song Sing-Alongs!";
+        String expected = "Live Music And Holiday Song Sing-Alongs!";
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder(new URI(url)).setHeader("cookie", Utilities.session);
             HttpRequest request = builder.GET()
@@ -61,7 +61,7 @@ public class GetAEventServletTest {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             String resBody = response.body();
-            int startIdx = resBody.indexOf("Title:");
+            int startIdx = resBody.indexOf("Live");
             int endIdx = resBody.indexOf("</p>");
             String title = resBody.substring(startIdx, endIdx);
             assertEquals(expected, title);

@@ -160,6 +160,46 @@ public class EditProfileServletTest {
         }
     }
 
+    @Test
+    // Test status code of changing user name
+    public void testValidXHtmlEditCorrectly() {
+        try {
+            String expected = "Li Liu";
+            Map<String, String> data = new HashMap<>();
+            data.put("id", "2");
+            data.put("name", "lucy");
+            data.put("email", "lliu78@dons.usfca.edu");
 
+            // Use Mockito library to create mocked request and response
+            HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse mockedResponse = Mockito.mock(HttpServletResponse.class);
+            // We also need a mocked context to return the data structure
+            ServletContext context = Mockito.mock(ServletContext.class);
+            // write output to textfile
+            PrintWriter writer = new PrintWriter("somefile.txt");
+            when(mockedResponse.getWriter()).thenReturn(writer);
+
+            // set up the mocked request to return a correct parameter value
+            when(mockedRequest.getParameter("name")).thenReturn(expected);
+            // set the mocked request to return the mocked context
+            when(mockedRequest.getServletContext()).thenReturn(context);
+            // set up the mocked context to return the data structure
+            when(context.getAttribute("data")).thenReturn(data);
+            mockedRequest.setAttribute("gender", "female");
+            mockedRequest.setAttribute("location", "Fremont");
+
+            // Execute the mocked request
+            EditProfileServlet ts = new EditProfileServlet();
+            ts.doPost(mockedRequest, mockedResponse);
+            writer.flush();
+
+            // Get response
+            String rs = TransferTicketServletTest.readFromFile("somefile.txt");
+            boolean actual = Utilities.isValid(rs);
+            assertTrue(actual);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
 
 }
