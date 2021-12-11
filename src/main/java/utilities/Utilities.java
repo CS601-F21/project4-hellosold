@@ -96,10 +96,33 @@ public class Utilities {
      * @return user id
      */
     public static int getUserId(HttpServletRequest request) {
-        Object data = request.getServletContext().getAttribute("data");
-        String id = String.valueOf(((Map<String, String>) data).get("id"));
-        int userId = Integer.parseInt(id);
-        System.out.println("Utility class, user id is: " + userId);
-        return userId;
+        Map<String,String> data = isLoggedIn(request, request.getSession().getId());
+        if (data != null) {
+            String id = data.get("id");
+            int userId = Integer.parseInt(id);
+            System.out.println("Utility class, user id is: " + userId);
+            return userId;
+        }
+        return 0;
+
+    }
+
+    /**
+     * A helper method to check whether the usr is logged in or not.
+     * @param request request
+     * @param sessionId session id
+     * @return map data of user info
+     */
+    public static Map<String, String> isLoggedIn(HttpServletRequest request, String sessionId) {
+//        System.out.println("receive a session id: " + sessionId);
+        Map<String, Map<String, String>> data = (Map<String, Map<String, String>>) request.getServletContext().getAttribute("data");
+        if (data == null) {
+            return null;
+        }
+        if (data.get(sessionId) == null) {
+            return null;
+        } else {
+            return data.get(sessionId);
+        }
     }
 }

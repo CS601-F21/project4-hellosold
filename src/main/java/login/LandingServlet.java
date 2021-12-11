@@ -7,9 +7,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpStatus;
 import utilities.Config;
 import utilities.LoginUtilities;
+import utilities.Utilities;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * Landing page that allows a user to request to login with Slack.
@@ -17,17 +19,18 @@ import java.io.PrintWriter;
 public class LandingServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         // retrieve the ID of this session
         String sessionId = req.getSession(true).getId(); // cookie
 
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if(clientInfoObj != null) {
+        Map<String, String> data = Utilities.isLoggedIn(req, sessionId);
+        if (data != null) {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
+            resp.getWriter().println("<a href=\"/home\">Go to Home</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
             return;
         }

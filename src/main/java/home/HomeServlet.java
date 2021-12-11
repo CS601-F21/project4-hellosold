@@ -32,12 +32,12 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        String sessionId = req.getSession().getId();
+        Map<String, String> data = Utilities.isLoggedIn(req, sessionId);
         PrintWriter writer = resp.getWriter();
 
-        if (clientInfoObj != null) {
+        if (data != null) {
             // already authed, no need to log in, go to the edit profile page
-            Map<String, String> data = (Map<String, String>) req.getServletContext().getAttribute("data");
             String id = String.valueOf(data.get("id"));
             int userId = Integer.parseInt(id);
             String name = data.get("name");

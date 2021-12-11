@@ -6,10 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpStatus;
-import utilities.UserInfo;
-import utilities.Config;
-import utilities.HTTPFetcher;
-import utilities.LoginUtilities;
+import utilities.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,11 +25,12 @@ public class LoginServlet extends HttpServlet {
         String sessionId = req.getSession(true).getId();
 
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
-        if(clientInfoObj != null) {
+        Map<String, String> userInfo = Utilities.isLoggedIn(req, sessionId);
+        if (userInfo != null) {
             // already authed, no need to log in
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>You have already been authenticated</h1>");
+            resp.getWriter().println("<a href=\"/home\">Go to Home</a>");
             resp.getWriter().println(LoginServerConstants.PAGE_FOOTER);
             return;
         }
@@ -57,7 +55,7 @@ public class LoginServlet extends HttpServlet {
 
         UserInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
-        if(clientInfo == null) {
+        if (clientInfo == null) {
             resp.setStatus(HttpStatus.OK_200);
             resp.getWriter().println(LoginServerConstants.PAGE_HEADER);
             resp.getWriter().println("<h1>Oops, login unsuccessful</h1>");
@@ -68,21 +66,25 @@ public class LoginServlet extends HttpServlet {
 
             // store user info into servlet context
             ServletContext context = req.getServletContext();
-            Map<String, String> userData = new HashMap<>();
-            userData.put("id", String.valueOf(clientInfo.getId()));
-            userData.put("name", clientInfo.getName());
-            userData.put("email", clientInfo.getEmail());
-            context.setAttribute("data", userData);
-
+            Map<String, Map<String, String>> sessionMap = (Map<String, Map<String, String>>) context.getAttribute(
+                    "data");
+            if (sessionMap == null) {
+                Map<String, Map<String, String>> data = new HashMap<>();
+                Map<String, String>  userData = new HashMap<>();
+                userData.put("id", String.valueOf(clientInfo.getId()));
+                userData.put("name", clientInfo.getName());
+                userData.put("email", clientInfo.getEmail());
+                data.put(sessionId, userData);
+                context.setAttribute("data", data);
+            } else {
+                Map<String, String>  userData = new HashMap<>();
+                userData.put("id", String.valueOf(clientInfo.getId()));
+                userData.put("name", clientInfo.getName());
+                userData.put("email", clientInfo.getEmail());
+                sessionMap.put(sessionId, userData);
+                context.setAttribute("data", sessionMap);
+            }
             resp.sendRedirect("/home");
-
-//            PrintWriter pw = resp.getWriter();
-//            pw.println(LoginServerConstants.PAGE_HEADER);
-//            pw.println(NavigationBarConstants.NAVI_STYLE);
-//            pw.println(LoginServerConstants.NAVI_BODY);
-//            pw.println("<h1>Hello, " + clientInfo.getName() + "</h1>");
-//            pw.println(LoginServerConstants.PAGE_FOOTER);
-
         }
     }
 }

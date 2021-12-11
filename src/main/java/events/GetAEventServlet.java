@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.Map;
 
 /**
  * This class handles get request to retrieve details for a specific event.
@@ -34,9 +35,10 @@ public class GetAEventServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        String sessionId = req.getSession().getId();
+        Map<String, String> data = Utilities.isLoggedIn(req, sessionId);
 
-        if (clientInfoObj != null) {
+        if (data != null) {
             // already authed, no need to log in, go to the edit profile page
             resp.setStatus(HttpStatus.OK_200);
             parseRequest(req, resp);
@@ -226,6 +228,9 @@ public class GetAEventServlet extends HttpServlet {
     private void getEditEventPage(HttpServletResponse response, int eventId) throws SQLException {
         try (Connection connection = DBCPDataSource.getConnection()) {
             Event event = JDBCUtility.executeGetEvent(connection, eventId);
+            if (event == null) {
+                return;
+            }
             PrintWriter writer = response.getWriter();
             writer.println(EventServletConstants.PAGE_HEADER);
             writer.println(EventServletConstants.Edit_EVENT_STYLE);

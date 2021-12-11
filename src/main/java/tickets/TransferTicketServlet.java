@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -39,10 +40,11 @@ public class TransferTicketServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // determine whether the user is already authenticated
-        Object clientInfoObj = req.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
+        String sessionId = req.getSession().getId();
+        Map<String, String> data = Utilities.isLoggedIn(req, sessionId);
         PrintWriter writer = resp.getWriter();
 
-        if (clientInfoObj != null) {
+        if (data!= null) {
             // already authed, no need to log in, go to the edit profile page
             resp.setStatus(HttpStatus.OK_200);
             writer.println(TransferTicketServletConstants.PAGE_HEADER);
