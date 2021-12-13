@@ -24,12 +24,6 @@ public class LoginServer {
     public static final int PORT = 8080;
 
     public static void main(String[] args) {
-//        try {
-//            con = DBCPDataSource.getConnection();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
         try {
             startup();
         } catch (Exception e) {
@@ -60,6 +54,7 @@ public class LoginServer {
         context.setAttribute(LoginServerConstants.CONFIG_KEY, config);
         context.setContextPath("/");
 
+        // get static files
         DefaultServlet defaultServlet = new DefaultServlet();
         ServletHolder holderPwd = new ServletHolder("default", defaultServlet);
         holderPwd.setInitParameter("resourceBase", "images");

@@ -15,6 +15,11 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.util.Map;
 
+/**
+ * This class has some helper methods.
+ *
+ * @author Li Liu
+ */
 public class Utilities {
     public static final String configFileName = "config.json";
     public static final String session = "JSESSIONID=node0vt4r9258t1wo1ixde27wiwdmn0.node0";
