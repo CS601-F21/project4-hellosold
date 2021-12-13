@@ -7,6 +7,11 @@ import utilities.Utilities;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * This class is used to connect to the database.
+ *
+ * @author Li Liu
+ */
 public class DBCPDataSource {
     private static BasicDataSource ds = new BasicDataSource();
 
